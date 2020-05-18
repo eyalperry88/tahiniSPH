@@ -23,7 +23,7 @@ Tahini phase shifts was simulated using [PySPH](https://pysph.readthedocs.io/en/
 
 ## Implementation
 
-The code is based on [hydrostatic_tank](https://github.com/pypr/pysph/blob/master/pysph/examples/hydrostatic_tank.py) example from PySPH, where fluid particles are floating in a tank. Each PySPH program basically contains three parts: particles, equations and a solver. I will describe the 2D version, although little changes are required to move to 3D (or higher!)
+The code is based on [hydrostatic_tank](https://github.com/pypr/pysph/blob/master/pysph/examples/hydrostatic_tank.py) example from PySPH, where fluid particles are floating in a tank. Each PySPH program basically contains three parts: particles, equations and a solver. First, I will describe the 2D version of fluid siumlation in a bowl mixed by a spoon (no phase shifts, yet)
 
 ### Create the Particles
 
@@ -84,7 +84,7 @@ def create_particles_xy():
     return x_bowl, y_bowl, x_spoon, y_spoon,x_tahini, y_tahini
 ```
 
-Next, we define properties for each particle. The volume and mass are computed as in the hydrostatic_tank example:
+Next, we define properties for each particle:
 
 ```python
 tahini.rho[:] = rho0
@@ -104,21 +104,100 @@ bowl.m[:] = volume * rho0
 spoon.m[:] = volume * rho0
 ```
 
-and we add our special tahini-water property. 
-
 ### Define the Equations
 
-The examples contains three ways to check for the boundary between the solid and liquid particles:
+The hydrostatic_tank contains three ways to check for the boundary between the solid and liquid particles:
 
- - Adami et al. "A generalized wall boundary condition for smoothed
-   particle hydrodynamics", 2012, JCP, 231, pp 7057--7075 (REF1)
+ - [Adami et al. "A generalized wall boundary condition for smoothed
+   particle hydrodynamics", 2012, JCP, 231, pp 7057--7075](https://www.sciencedirect.com/science/article/pii/S002199911200229X?casa_token=aQ5VRuReYuEAAAAA:5HpBoFwsU_cXWDH4BeM7h2iShXCEA-rcXqHn4GO5diZAe3NfHG3Qh76-iSlcG-C2t4YYmqSiEA) (REF1)
 
- - Monaghan and Kajtar, "SPH particle boundary forces for arbitrary
-   boundaries", 2009, 180, pp 1811--1820 (REF2)
+ - [Monaghan and Kajtar, "SPH particle boundary forces for arbitrary
+   boundaries", 2009, 180, pp 1811--1820](https://ui.adsabs.harvard.edu/abs/2009CoPhC.180.1811M/abstract) (REF2)
 
  - Gesteria et al. "State-of-the-art of classical SPH for free-surface
    flows", 2010, JHR, pp 6--27 (REF3)
    
-REF2 requires special spacing between fluid and solid particles, and REF1 proved to be 75% slower in my experiments, so I'm using the third formulation (the attached code supports REF1 & REF2)
+REF2 requires special spacing between fluid and solid particles, and REF1 proved to be 75% slower in my experiments, so I'm using the third formulation:
+
+```python
+equations3 = [
+    # For the multi-phase formulation, we require an estimate of the
+    # particle volume. This can be either defined from the particle
+    # number density or simply as the ratio of mass to density.
+    Group(equations=[
+        VolumeFromMassDensity(dest='tahini', sources=None)
+    ], ),
+
+    # Equation of state is typically the Tait EOS with a suitable
+    # exponent gamma. The solid phase is treated just as a fluid and
+    # the pressure and density operations is updated for this as well.
+    Group(equations=[
+        TaitEOS(
+            dest='tahini',
+            sources=None,
+            rho0=rho0,
+            c0=c0,
+            gamma=gamma),
+        TaitEOS(
+            dest='bowl',
+            sources=None,
+            rho0=rho0,
+            c0=c0,
+            gamma=gamma),
+        TaitEOS(
+            dest='spoon',
+            sources=None,
+            rho0=rho0,
+            c0=c0,
+            gamma=gamma),
+    ], ),
+
+    # Main acceleration block. The boundary conditions are imposed by
+    # peforming the continuity equation and gradient of pressure
+    # calculation on the bowl phase, taking contributions from the
+    # tahini phase
+    Group(equations=[
+        # Continuity equation
+        ContinuityEquation(dest='tahini', sources=['tahini', 'bowl', 'spoon']),
+        ContinuityEquation(dest='bowl', sources=['tahini']),
+        ContinuityEquation(dest='spoon', sources=['tahini']),
+
+        # Pressure gradient with acceleration damping.
+        MomentumEquationPressureGradient(
+            dest='tahini', sources=['tahini', 'bowl', 'spoon'], pb=0.0, gy=gy,
+            tdamp=tdamp),
+
+        # artificial viscosity for stability
+        MomentumEquationArtificialViscosity(
+            dest='tahini', sources=['tahini', 'bowl', 'spoon'], alpha=1, c0=c0),
+
+        # Position step with XSPH
+        XSPHCorrection(dest='tahini', sources=['tahini'], eps=0.5)
+
+    ]),
+]
+ ```
+ 
+ Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type
+ 
+ A few basic equations (from Adami 2012):
+ - ContinuityEquation - conservation of mass
+$$
+\frac{d\rho_a}{dt} = \rho_a \sum_b \frac{m_b}{\rho_b} \boldsymbol{v}_{ab} \cdot \nabla_a W_{ab
+$$
+
+- MomentumEquationPressureGradient - pressure
+$$
+\frac{d \boldsymbol{v}_a}{dt} = \frac{1}{m_a}\sum_b (V_a^2 +V_b^2)\left[-\bar{p}_{ab}\nabla_a W_{ab} \right]
+$$
+
+- MomentumEquationArtificialViscosity - viscosity
+
+$$
+\frac{d \boldsymbol{v}_a}{dt} = -\sum_b m_b \alpha h_{ab}
+        c_{ab} \frac{\boldsymbol{v}_{ab}\cdot
+        \boldsymbol{r}_{ab}}{\rho_{ab}\left(|r_{ab}|^2 + \epsilon
+        \right)}\nabla_a W_{ab}
+$$
 
 ### Solve it
