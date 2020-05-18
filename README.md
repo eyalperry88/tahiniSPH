@@ -1,4 +1,6 @@
-## Welcome to GitHub Pages
+# Tahini SPH
+
+## Smoothed-particle synamics simulation of Tahini phase shifts
 
 You can use the [editor on GitHub](https://github.com/eyalperry88/tahiniSPH/edit/master/README.md) to maintain and preview the content for your website in Markdown files.
 
