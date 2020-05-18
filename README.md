@@ -1,4 +1,6 @@
-{% include site/includes.html %}
+---
+mathjax: true
+---
 
 ## Background
 
