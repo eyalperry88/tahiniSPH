@@ -193,16 +193,16 @@ $$
 
 - MomentumEquationArtificialViscosity - viscosity
 
-$$
+$
 \frac{d \boldsymbol{v}_a}{dt} = -\sum_b m_b \alpha h_{ab}
         c_{ab} \frac{\boldsymbol{v}_{ab}\cdot
         \boldsymbol{r}_{ab}}{\rho_{ab}\left(|r_{ab}|^2 + \epsilon
         \right)}\nabla_a W_{ab}
-$$
+$
 
 
 Ok what about now
 
-$$ H = ax $$
+$ H = ax $
 
 ### Solve it
