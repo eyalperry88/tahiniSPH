@@ -1,10 +1,10 @@
-{% include lib/includes.html %}
+{% include site/includes.html %}
 
 ## Background
 
-Tahini is amazing. A condiment made from toasted ground hulled sesame, tahini can be added to a variety of dishes and drinks to improve taste, texture and [nutritional value](https://fdc.nal.usda.gov/fdc-app.html#/food-details/168604/nutrients). 
+Tahini is amazing. A condiment made from toasted ground hulled sesame, tahini can be added to a variety of dishes and drinks to improve taste, texture and [nutritional value](https://fdc.nal.usda.gov/fdc-app.html#/food-details/168604/nutrients).
 
-Tahini is best when purchased as 100% sesame paste. 
+Tahini is best when purchased as 100% sesame paste.
 ![100% Tahini Products](assets/tahini_products.png)
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
@@ -15,7 +15,7 @@ Video demonstration:
 
 Notice that while sharing certain similarities, Tahini is *not* a "classical" non-Newtonian fluid, which exhibits phase shifts as response to stress. Tahini's phase is defined the amount of water in the system, and the solid phase is dependent on "just the right amount" - too little or too much water, and tahini is still liquid (viscous, but liquid). Not exhibited in the video, having the right amount for a long time creates such a solid piece of Tahini that it might break a blender. Be careful.
 
-This process is sometimes described as "seizing" and is not unique to Tahini. Peanut butter, as well as non edible materials such as plaster, are known to seize up water and solidify before going to liquid state. This happens as small amounts water act as a cross-linker between molecules. We assume a similar process happens for tahini, while the liquid starting point is due to the high oil concentration. 
+This process is sometimes described as "seizing" and is not unique to Tahini. Peanut butter, as well as non edible materials such as plaster, are known to seize up water and solidify before going to liquid state. This happens as small amounts water act as a cross-linker between molecules. We assume a similar process happens for tahini, while the liquid starting point is due to the high oil concentration.
 
 ## Simulation
 
@@ -118,7 +118,7 @@ The hydrostatic_tank contains three ways to check for the boundary between the s
 
  - Gesteria et al. "State-of-the-art of classical SPH for free-surface
    flows", 2010, JHR, pp 6--27 (REF3)
-   
+
 REF2 requires special spacing between fluid and solid particles, and REF1 proved to be 75% slower in my experiments, so I'm using the third formulation:
 
 ```python
@@ -179,9 +179,9 @@ equations3 = [
     ]),
 ]
  ```
- 
+
  Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type
- 
+
  A few basic equations (from Adami 2012):
  - ContinuityEquation - conservation of mass
 $$
