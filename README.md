@@ -204,4 +204,9 @@ $$
         \right)}\nabla_a W_{ab}
 $$
 
+
+Ok what about now
+
+$$ H = ax $$
+
 ### Solve it
