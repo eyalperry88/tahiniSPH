@@ -29,7 +29,7 @@ The code is based on [hydrostatic_tank](https://github.com/pypr/pysph/blob/maste
 
 ### Create the Particles
 
-We create a bowl, tahini and a mixing spoon. We create a uniform mesh grid and pick the indices relevant for each object:
+We create a bowl, tahini and a mixing spoon. We create a uniform mesh grid:
 
 ```python
 # dimensions
@@ -45,45 +45,50 @@ nx = 100
 dx = Lx / nx
 ghost_extent = 5.5 * dx
 
-def create_particles_xy():
-    _x = np.arange(-ghost_extent, Lx + ghost_extent, dx)
-    _y = np.arange(-ghost_extent, Ly, dx)
-    x, y = np.meshgrid(_x, _y)
-    x = x.ravel()
-    y = y.ravel()
+_x = np.arange(-ghost_extent, Lx + ghost_extent, dx)
+_y = np.arange(-ghost_extent, Ly, dx)
+x, y = np.meshgrid(_x, _y)
+x = x.ravel()
+y = y.ravel()
+```
 
-    # filter out anything that is not the bowl
-    p_bowl = []
-    for i in range(x.size):
-        r = (x[i] - Cx)**2 + (y[i] - Cy)**2
-        if r > bowlR**2 and r < (bowlR + ghost_extent)**2:
-            p_bowl.append(i)
+And create objects based on particle coordinates.
 
-    x_bowl = x[p_bowl]
-    y_bowl = y[p_bowl]
+Bowl (hollow half sphere)
+```python
+p_bowl = []
+for i in range(x.size):
+    r = (x[i] - Cx)**2 + (y[i] - Cy)**2
+    if r > bowlR**2 and r < (bowlR + ghost_extent)**2:
+        p_bowl.append(i)
 
-    # spoon has a special shape
-    p_spoon = []
-    for i in range(x.size):
-        if y[i] > 0.25 and ((x[i] > 0.6 and x[i] < 0.8 and y[i] < tahiniH) or (x[i] > 0.66 and x[i] < 0.74)):
-            p_spoon.append(i)
+x_bowl = x[p_bowl]
+y_bowl = y[p_bowl]
+```
 
-    x_spoon = x[p_spoon]
-    y_spoon = y[p_spoon]
+Spoon (funky shape)
+```python
+p_spoon = []
+for i in range(x.size):
+    if y[i] > 0.25 and ((x[i] > 0.6 and x[i] < 0.8 and y[i] < tahiniH) or (x[i] > 0.66 and x[i] < 0.74)):
+        p_spoon.append(i)
 
-    # tahini fills the bowl
-    p = []
-    for i in range(x.size):
-        if i in p_spoon:
-            continue
-        r = (x[i] - Cx)**2 + (y[i] - Cy)**2
-        if r < bowlR**2 and y[i] < tahiniH:
-            p.append(i)
+x_spoon = x[p_spoon]
+y_spoon = y[p_spoon]
+```
 
-    x_tahini = x[p]
-    y_tahini = y[p]
+Tahini (sphere minus spoon)
+```python
+p = []
+for i in range(x.size):
+    if i in p_spoon:
+        continue
+    r = (x[i] - Cx)**2 + (y[i] - Cy)**2
+    if r < bowlR**2 and y[i] < tahiniH:
+        p.append(i)
 
-    return x_bowl, y_bowl, x_spoon, y_spoon,x_tahini, y_tahini
+x_tahini = x[p]
+y_tahini = y[p]
 ```
 
 Next, we define properties for each particle:
@@ -116,8 +121,8 @@ The hydrostatic_tank contains three ways to check for the boundary between the s
  - [Monaghan and Kajtar, "SPH particle boundary forces for arbitrary
    boundaries", 2009, 180, pp 1811--1820](https://ui.adsabs.harvard.edu/abs/2009CoPhC.180.1811M/abstract) (REF2)
 
- - Gesteria et al. "State-of-the-art of classical SPH for free-surface
-   flows", 2010, JHR, pp 6--27 (REF3)
+ - [Gesteria et al. "State-of-the-art of classical SPH for free-surface
+   flows", 2010, JHR, pp 6--27](https://ephyslab.uvigo.es/publica/documents/file_6Gomez-Gesteira_et_al_2010_JHR_SI.pdf) (REF3)
 
 REF2 requires special spacing between fluid and solid particles, and REF1 proved to be 75% slower in my experiments, so I'm using the third formulation:
 
@@ -189,4 +194,50 @@ $$
       \right)}\nabla_a W_{ab}
 $$
 
+To move the spoon around, I defined a simple harmonic undamped force equation and applied it on the spoon particles:
+
+```python
+class HarmonicOscilllator(Equation):
+    def __init__(self, dest, sources, A=4.0, omega=0.5):
+        self.A = A
+        self.omega = omega
+        super(HarmonicOscilllator, self).__init__(dest, sources)
+
+    def initialize(self, d_idx, d_au, d_av, d_aw, t):
+        d_au[d_idx] = self.A * cos(self.omega * 2 * M_PI * t)
+```
+
+Add it to the equations list:
+```python
+...
+# Spoon Equations
+Group(equations=[
+    HarmonicOscilllator(dest='spoon', sources=None, A=0.5, omega=0.2),
+
+    # Translate acceleration to positions
+    XSPHCorrection(dest='spoon', sources=['spoon'], eps=0.0)
+], real=False),
+...
+```
+
 ### Solve it
+
+Last, we define an kernel and integrator:
+
+```
+# Create the kernel
+#kernel = Gaussian(dim=2)
+kernel = CubicSpline(dim=2)
+#kernel = QuinticSpline(dim=2)
+
+integrator = PECIntegrator(tahini=WCSPHStep(), bowl=WCSPHStep(), spoon=WCSPHStep())
+
+# Create a solver.
+solver = Solver(kernel=kernel, dim=2, integrator=integrator,
+                tf=tf, dt=dt,
+                adaptive_timestep=False
+                )
+return solver
+```
+
+### And the results
