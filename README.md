@@ -21,7 +21,7 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 
 Tahini phase shifts was simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl, spoon). The tahini particles contain a property which corresponds to the amount of H2O aorund that particle. In addition to to fluid flow equations (See Implementation) - a new equation was added to the system, each two particles interact by Van der Waalce force (Lennard Jones potential) dependent on a Gaussian of the sum of the H2O for both particles.
 
-## Implementation
+## Implementation (the beginning)
 
 The code is based on [hydrostatic_tank](https://github.com/pypr/pysph/blob/master/pysph/examples/hydrostatic_tank.py) example from PySPH, where fluid particles are floating in a tank. Each PySPH program basically contains three parts: particles, equations and a solver. First, I will describe the 2D version of fluid siumlation in a bowl mixed by a spoon (no phase shifts, yet)
 
@@ -241,3 +241,83 @@ return solver
 ### And the results
 
 ![Fluid in a bowl](assets/fluid.gif)
+
+The colors represents the velocity magnitude. Using 1500~ tahini particles, approximately 3 minutes to run on my laptop using multicore (OpenMPI)
+
+## From fluid to tahini and back again
+
+Now it's time to make things more interesting, I decided to create the following model - each tahini particle hold a property which symbolizes the amount of H2O in its vicinity. Now we are going to make every two tahini particles interact using Van der Waals force, which we define by the Lennard Jones potential:
+
+$$
+U_{ij} = 4 \epsilon \Big((\frac{sigma}{r_{ij}})^12 - (\frac{sigma}{r_{ij}})^6)
+$$
+
+![Lennard Jones potential](https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/12-6-Lennard-Jones-Potential.svg/1280px-12-6-Lennard-Jones-Potential.svg.png)
+
+Where $\espilon$ is a magic number that we have to choose for our settings. $\sigma$ is the max distance at which two particles have an effect, and $r_{ij}$ is the distance between te particles
+
+The force acting on two particles would be
+
+$$
+F_{ij} = \frac{dU}{dr}\frac{r_i - r_j}{|r_i - r_j|} = 24 \epsilon \Big(2 * (\frac{sigma^12}{r_{ij}^13}) - (\frac{sigma^6}{r_{ij}^7}))\frac{r_i - r_j}{|r_i - r_j|}
+$$
+
+And now comes the trick. We apply this force with a certain *probability*, a Gaussian which depends on the amount of H2O both particles have. So, if there is no water OR too much water, the particles will not be exhibit Van der Waals forces. If there is just the right amount (and ths we introduce another magic number, which can be experimentally found...)
+
+$$
+p_{ij} = exp(\frac{-({H2O}_i + {H2O}_j - \mu)^2}{\sigma})
+$$
+
+We set $\mu = 1$ and $\sigma=1/12$, so low amount of water will exhibit nearly zero interaction force
+
+The code for the equation looks like:
+
+```python
+class TahiniEquation(Equation):
+    def __init__(self, dest, sources, sigma):
+        self.eps = 0.5      # magic number
+        self.sigma = sigma  # the distance in which particles have no effect
+        self.var = 12       # the inverse variance of the gaussian. we want this so e^(-1 * var) ~ 0
+        super(TahiniEquation, self).__init__(dest, sources)
+
+    def initialize(self, d_idx, d_au, d_av, d_aw):
+        d_au[d_idx] = 0.0
+        d_av[d_idx] = 0.0
+        d_aw[d_idx] = 0.0
+
+    def loop(self, d_idx, d_m, d_au, d_av, d_aw, s_idx, s_m, d_h2o_amount, s_h2o_amount, RIJ, XIJ):
+        if RIJ > 1e-9:
+            # Gaussian distrbution for tahini-water-tahini interaction
+            p = M_E ** (- (d_h2o_amount[d_idx] + s_h2o_amount[s_idx] - 1) ** 2 * self.var)
+
+            # Forced derived from Lennard-Jones potential
+            F_LJ = 24 * self.eps * (- 2 * (self.sigma ** 12 / RIJ ** 13) + (self.sigma ** 6 / RIJ ** 7))
+
+            # normal vector passing from particle i to j
+            nij_x = -XIJ[0] / RIJ
+            nij_y = -XIJ[1] / RIJ
+            nij_z = -XIJ[2] / RIJ
+        else:
+            p = 0.0
+            F_LJ = 0.0
+
+            nij_x = 0.0
+            nij_y = 0.0
+            nij_z = 0.0
+
+        d_au[d_idx] += p * F_LJ * nij_x
+        d_av[d_idx] += p * F_LJ * nij_y
+        d_aw[d_idx] += p * F_LJ * nij_z
+```
+
+And we add it to our equation list:
+
+```python
+equations=[ ... TahiniEquation(dest='tahini', sources=['tahini'], sigma=dx / 1.122), ... ]
+```
+
+If we now set every particle water content to 0.5 (the ideal), we now get:
+
+![Solid tahini in a bowl](assets/solid.gif)
+
+Pretty solid!
