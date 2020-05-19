@@ -29,7 +29,7 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 ## Lets start from the end
 
 <video width="640" height="360" controls autoplay loop>
-  <source src="assets/tahini_sph_3d.mp4" type="video/mp4">
+  <source src="assets/tahini_sph_3d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
@@ -423,7 +423,7 @@ First, here is just a bowl of liquid and a spoon:
 Your browser does not support the video tag.
 </video>
 
-While peer-reviewing this work, a colleague mentioned that "this is a terrible way to stir tahini". Therefore, we changed the spoon equation to a particle with constant velocity moving in a 2D circle:
+While peer-reviewing this work, a colleague mentioned that this "is a terrible way to stir tahini". Therefore, we changed the spoon equation to a particle with constant velocity moving in a 2D circle:
 
 ```python
 class CircularMotion(Equation):
@@ -439,7 +439,12 @@ class CircularMotion(Equation):
         d_aw[d_idx] = (self.A * self.omega) ** 2 * sin(self.omega * 2 * M_PI * t) * (sin(self.omega * 2 * M_PI * t) - 2 * cos(self.omega * 2 * M_PI * t))
 ```
 
+And the results:
 
+<video width="640" height="360" controls>
+  <source src="assets/tahini_sph_3d.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
 
 ## How to run
@@ -471,3 +476,11 @@ First, we need to convert npz files to vtk. PySPH is awesome and allows us to ea
 `pysph dump_vtk -s rho,x,y,z -d output/ input/*.npz`
 
 Then we can open the simulation results in ParaView and mess around with it.
+
+## Acknowledgements
+
+Many many thanks to:
+- Filippos for helpful tips on visualization of SPH.
+- Manu for AWS compute to generate the 3D animations.
+- Tahini filming crew: Tomás, Jan and Björn.
+- Wholefoods for the Tahini (although there used to be a better brand at H-Mart and it mysteriously disappeared off the shelves...)
