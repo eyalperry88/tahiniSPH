@@ -1,6 +1,6 @@
 {% include mathjax.html %}
 
-<div style="text-align:right; font-style: italic;">Eyal Perry, Nature of Mathematical Modeling 2020</div>
+<div style="text-align:right; font-style: italic;">Eyal Perry, <a href="http://fab.cba.mit.edu/classes/864.20/index.html">Nature of Mathematical Modeling 2020</a></div>
 
 ## Background
 
