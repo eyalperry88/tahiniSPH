@@ -165,15 +165,17 @@ equations3 = [
 ]
  ```
 
- Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type
+Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type. A few equations behind the scenes:
 
- A few basic equations (from Adami 2012):
- - ContinuityEquation - conservation of mass
+
+- ContinuityEquation - conservation of mass
+
 $$
-\frac{d\rho_a}{dt} = \rho_a \sum_b \frac{m_b}{\rho_b} \boldsymbol{v}_{ab} \cdot \nabla_a W_{ab
+\frac{d\rho_a}{dt} = \rho_a \sum_b \frac{m_b}{\rho_b} \boldsymbol{v}_{ab} \cdot \nabla_a W_{ab}
 $$
 
 - MomentumEquationPressureGradient - pressure
+
 $$
 \frac{d \boldsymbol{v}_a}{dt} = \frac{1}{m_a}\sum_b (V_a^2 +V_b^2)\left[-\bar{p}_{ab}\nabla_a W_{ab} \right]
 $$
@@ -182,11 +184,9 @@ $$
 
 $$
 \frac{d \boldsymbol{v}_a}{dt} = -\sum_b m_b \alpha h_{ab}
-        c_{ab} \frac{\boldsymbol{v}_{ab}\cdot
-        \boldsymbol{r}_{ab}}{\rho_{ab}\left(|r_{ab}|^2 + \epsilon
-        \right)}\nabla_a W_{ab}
+      c_{ab} \frac{\boldsymbol{v}_{ab}\cdot
+      \boldsymbol{r}_{ab}}{\rho_{ab}\left(|r_{ab}|^2 + \epsilon
+      \right)}\nabla_a W_{ab}
 $$
-
-
 
 ### Solve it
