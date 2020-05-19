@@ -395,4 +395,11 @@ Group(equations=[
 ]),
 ```
 
-Now for the animation, we will paint each
+And here is the results:
+
+<video width="640" height="360" controls>
+  <source src="assets/tahini_sph_2d.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+Each particle is colored with the H2O amount it sees. As you can see, the system starts as a fluid. After a short while, "water drops" starts to trickle. The system become somewhat solid/granular... but then as water saturates the system, it goes back to liquid.
