@@ -446,6 +446,13 @@ And the results:
 Your browser does not support the video tag.
 </video>
 
+Water is flowing a bit too quickly to notice... so here is a slower *fill_rate*:
+
+
+<video width="640" height="360" controls autoplay loop>
+  <source src="assets/tahini_sph_3d_v2.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
 
 ## How to run
 
