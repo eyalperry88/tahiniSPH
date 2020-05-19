@@ -5,7 +5,7 @@
 Tahini is amazing. A condiment made from toasted ground hulled sesame, tahini can be added to a variety of dishes and drinks to improve taste, texture and [nutritional value](https://fdc.nal.usda.gov/fdc-app.html#/food-details/168604/nutrients).
 
 Tahini is best when purchased as 100% sesame paste.
-![100% Tahini Products](assets/tahini_products.png)
+![100% Tahini Products](assets/tahini_products.jpg)
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
 
