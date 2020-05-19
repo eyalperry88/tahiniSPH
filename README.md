@@ -1,3 +1,5 @@
+{% include mathjax.html %}
+
 ## Background
 
 Tahini is amazing. A condiment made from toasted ground hulled sesame, tahini can be added to a variety of dishes and drinks to improve taste, texture and [nutritional value](https://fdc.nal.usda.gov/fdc-app.html#/food-details/168604/nutrients).
@@ -132,24 +134,9 @@ equations3 = [
     # exponent gamma. The solid phase is treated just as a fluid and
     # the pressure and density operations is updated for this as well.
     Group(equations=[
-        TaitEOS(
-            dest='tahini',
-            sources=None,
-            rho0=rho0,
-            c0=c0,
-            gamma=gamma),
-        TaitEOS(
-            dest='bowl',
-            sources=None,
-            rho0=rho0,
-            c0=c0,
-            gamma=gamma),
-        TaitEOS(
-            dest='spoon',
-            sources=None,
-            rho0=rho0,
-            c0=c0,
-            gamma=gamma),
+        TaitEOS(dest='tahini',sources=None,rho0=rho0,c0=c0,gamma=gamma),
+        TaitEOS(dest='bowl',sources=None,rho0=rho0,c0=c0,gamma=gamma),
+        TaitEOS(dest='spoon',sources=None,rho0=rho0,c0=c0,gamma=gamma),
     ], ),
 
     # Main acceleration block. The boundary conditions are imposed by
@@ -193,16 +180,13 @@ $$
 
 - MomentumEquationArtificialViscosity - viscosity
 
-$
+$$
 \frac{d \boldsymbol{v}_a}{dt} = -\sum_b m_b \alpha h_{ab}
         c_{ab} \frac{\boldsymbol{v}_{ab}\cdot
         \boldsymbol{r}_{ab}}{\rho_{ab}\left(|r_{ab}|^2 + \epsilon
         \right)}\nabla_a W_{ab}
-$
+$$
 
 
-Ok what about now
-
-$ H = ax $
 
 ### Solve it
