@@ -10,7 +10,7 @@ Tahini is best when purchased as 100% sesame paste.
 
 <figure class="image">
   <img src="assets/tahini_products.jpg">
-  <figcaption style="text-align:right; font-style: italic; font-size:10px;">No Tahini has been wasted in the making of this experiment.</figcaption>
+  <figcaption style="text-align:right; font-style: italic; font-size:12px; margin-bottom:10px;">No Tahini has been wasted in the making of this experiment.</figcaption>
 </figure>
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
