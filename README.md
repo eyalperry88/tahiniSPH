@@ -239,3 +239,5 @@ return solver
 ```
 
 ### And the results
+
+![Fluid in a bowl](assets/fluid.gif)
