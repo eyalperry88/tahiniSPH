@@ -33,7 +33,7 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 Your browser does not support the video tag.
 </video>
 
-Tahini phase shift is simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl/spoon). The tahini particles contain a property which corresponds to the amount of H2O arund that particle. In addition to classical fluid flow equations, as well as rigid body motion equation to move the spoon - a new equation was introduced to the system: **Weighted Lennard Jones Interaction**. Every two particles interact a [Lennard Jones potential](https://en.wikipedia.org/wiki/Lennard-Jones_potential) dependent on a Gaussian of the sum of H2O for both particles. Thus simulating H2O dependent crosslinking of Tahini. Kind of.
+Tahini phase shift is simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl/spoon). The tahini particles contain a property which corresponds to the amount of H2O arund that particle. In addition to classical fluid flow equations, as well as rigid body motion equation to move the spoon - a new equation was introduced to the system: **Weighted Lennard Jones Interaction**. Every two particles exhibit a [Lennard Jones potential](https://en.wikipedia.org/wiki/Lennard-Jones_potential) dependent on a Gaussian of the sum of H2O for both particles. Thus simulating H2O dependent crosslinking of Tahini. Kind of.
 
 <video width="640" height="360" controls autoplay loop>
   <source src="assets/tahini_sph_2d_v3.mp4" type="video/mp4">
