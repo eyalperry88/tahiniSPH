@@ -38,7 +38,7 @@ Tahini phase shift is simulated using [PySPH](https://pysph.readthedocs.io/en/la
 <video width="640" height="360" controls autoplay loop>
   <source src="assets/tahini_sph_2d_v3.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video><br /><br /><br />
+</video><br />
 
 ## The Basics
 
@@ -411,7 +411,7 @@ And here is the results:
 <video width="640" height="360" controls>
   <source src="assets/tahini_sph_2d.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video><br /><br /><br />
+</video><br />
 
 Each particle is colored with the H2O amount it sees. As you can see, the system starts as a fluid. After a short while, "water drops" starts to trickle. The system become somewhat solid/granular... but then as water saturates the system, it goes back to liquid.
 
@@ -423,7 +423,7 @@ First, here is just a bowl of liquid and a spoon:
 <video width="640" height="360" controls>
   <source src="assets/fluid_3d.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video>
+</video><br />
 
 While peer-reviewing this work, a colleague mentioned that this "is a terrible way to stir tahini". Therefore, we changed the spoon equation to a particle with constant velocity moving in a 2D circle:
 
@@ -446,7 +446,7 @@ And the results:
 <video width="640" height="360" controls>
   <source src="assets/tahini_sph_3d.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video><br /><br />
+</video><br />
 
 Water is flowing a bit too quickly to notice... so here is a slower *fill_rate*:
 
@@ -454,7 +454,7 @@ Water is flowing a bit too quickly to notice... so here is a slower *fill_rate*:
 <video width="640" height="360" controls>
   <source src="assets/tahini_sph_3d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video><br /><br /><br />
+</video><br />
 
 ## How to run
 
