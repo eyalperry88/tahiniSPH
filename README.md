@@ -28,7 +28,7 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 
 ## Simulation
 
-<video width="640" height="360" autoplay loop>
+<video width="640" height="360" controls autoplay loop>
   <source src="assets/tahini_sph_2d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -261,7 +261,7 @@ The colors represents the velocity magnitude. Using 1500~ tahini particles, appr
 Now it's time to make things more interesting, I decided to create the following model - each tahini particle hold a property which symbolizes the amount of H2O in its vicinity. Now we are going to make every two tahini particles interact using Van der Waals force, which we define by the Lennard Jones potential:
 
 $$
-U_{ij} = 4 \epsilon \Big((\frac{\sigma}{r_{ij}})^{12} - (\frac{\sigma}{r_{ij}})^6)
+U_{ij} = 4 \epsilon \Bigg[\Big(\frac{\sigma}{r_{ij}}\Big)^{12} - \Big(\frac{\sigma}{r_{ij}}\Big)^6\Bigg[
 $$
 
 ![Lennard Jones potential](https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/12-6-Lennard-Jones-Potential.svg/1280px-12-6-Lennard-Jones-Potential.svg.png)
@@ -271,13 +271,13 @@ Where $\espilon$ is a magic number that we have to choose for our settings. $\si
 The force acting on two particles would be
 
 $$
-F_{ij} = \frac{dU}{dr}\frac{r_i - r_j}{|r_i - r_j|} = 24 \epsilon \Big(2 * (\frac{\sigma^{12}}{r_{ij}^{13}}) - (\frac{\sigma^6}{r_{ij}^7}))\frac{r_i - r_j}{|r_i - r_j|}
+F_{ij} = \frac{\partialU}{\partial r}\frac{r_i - r_j}{|r_i - r_j|} = 24 \epsilon \Bigg[2 \Big(\frac{\sigma^{12}}{r_{ij}^{13}}\Big) - \Big(\frac{\sigma^6}{r_{ij}^7}\Big) \Bigg]\frac{r_i - r_j}{|r_i - r_j|}
 $$
 
 And now comes the trick. We apply this force with a certain *probability*, a Gaussian which depends on the amount of H2O both particles have. So, if there is no water OR too much water, the particles will not be exhibit Van der Waals forces. If there is just the right amount (and ths we introduce another magic number, which can be experimentally found...)
 
 $$
-p_{ij} = exp(\frac{-({H2O}_i + {H2O}_j - \mu)^2}{\sigma})
+p_{ij} = exp\Big(\frac{-({H2O}_i + {H2O}_j - \mu)^2}{\sigma}\Big)
 $$
 
 We set $\mu = 1$ and $\sigma=1/12$, so low amount of water will exhibit nearly zero interaction force
