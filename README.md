@@ -395,6 +395,8 @@ Group(equations=[
 ]),
 ```
 
+The magic numbers of fill_rate, faucet size and diffusion size were chosen so water doesn't overflow the system to quickly and we can see the phase shift.
+
 And here is the results:
 
 <video width="640" height="360" controls>
@@ -403,3 +405,28 @@ Your browser does not support the video tag.
 </video>
 
 Each particle is colored with the H2O amount it sees. As you can see, the system starts as a fluid. After a short while, "water drops" starts to trickle. The system become somewhat solid/granular... but then as water saturates the system, it goes back to liquid.
+
+## 3D
+
+Do re-do all of this in 3D all we need is just to change `create_particles` to return particles with X, Y and Z coordinates. The only caveat is that it takes much longer to run...
+
+First, here is just a bowl of liquid and a spoon:
+<video width="640" height="360" controls>
+  <source src="assets/fluid_3d.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+In the porcess of peer-reviewing this work, a colleague mention that "this is a terrible way to stir tahini". Therefore we changed the spoon equation to a particle with constant velocity moving in a circle:
+```python
+class CircularMotion(Equation):
+    def __init__(self, dest, sources, A=4.0, omega=0.5):
+        self.A = A
+        self.omega = omega
+        super(CircularMotion, self).__init__(dest, sources)
+
+    def initialize(self, d_idx, d_au, d_u, d_av, d_aw, d_w, t):
+        d_u[d_idx] = self.A * self.omega * cos(self.omega * 2 * M_PI * t)
+        d_au[d_idx] = (self.A * self.omega) ** 2 * cos(self.omega * 2 * M_PI * t) * (cos(self.omega * 2 * M_PI * t) - 2 * sin(self.omega * 2 * M_PI * t))
+        d_w[d_idx] = self.A * self.omega * sin(self.omega * 2 * M_PI * t)
+        d_aw[d_idx] = (self.A * self.omega) ** 2 * sin(self.omega * 2 * M_PI * t) * (sin(self.omega * 2 * M_PI * t) - 2 * cos(self.omega * 2 * M_PI * t))
+```
