@@ -28,9 +28,6 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 
 ## Simulation
 
-![Fluid in a bowl](assets/tahini_sph_2d_2.gif)
-
-
 <video width="640" height="360" autoplay loop>
   <source src="assets/tahini_sph_2d_2.mp4" type="video/mp4">
 Your browser does not support the video tag.
@@ -413,7 +410,7 @@ Each particle is colored with the H2O amount it sees. As you can see, the system
 
 ## 3D
 
-Do re-do all of this in 3D all we need is just to change `create_particles` to return particles with X, Y and Z coordinates. The only caveat is that it takes much longer to run...
+Do re-do all of this in 3D all we need is just to change `create_particles` to return particles with X, Y and Z coordinates. The number indicating the faucet fill rate and diffusion had to be adjusted so the bigger volume gets filled within a reasonable amount of time. It takes much longer time to run, and even a longer time to visualize properly, therefore I don't have as many animations as I hoped for. Nonetheless..
 
 First, here is just a bowl of liquid and a spoon:
 <video width="640" height="360" controls>
@@ -421,7 +418,8 @@ First, here is just a bowl of liquid and a spoon:
 Your browser does not support the video tag.
 </video>
 
-In the porcess of peer-reviewing this work, a colleague mentioned that "this is a terrible way to stir tahini". Therefore we changed the spoon equation to a particle with constant velocity moving in a circle:
+While peer-reviewing this work, a colleague mentioned that "this is a terrible way to stir tahini". Therefore, we changed the spoon equation to a particle with constant velocity moving in a 2D circle:
+
 ```python
 class CircularMotion(Equation):
     def __init__(self, dest, sources, A=4.0, omega=0.5):
