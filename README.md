@@ -26,16 +26,21 @@ Notice that while sharing certain similarities, Tahini is *not* a "classical" no
 
 This process is sometimes described as "seizing" and is not unique to Tahini. Peanut butter, as well as non edible materials such as plaster, are known to seize up water and solidify before going to liquid state. This happens as small amounts water act as a cross-linker between molecules. We assume a similar process happens for tahini, while the liquid starting point is due to the high oil concentration.
 
-## Simulation
+## Lets start from the end
+
+<video width="640" height="360" controls autoplay loop>
+  <source src="assets/tahini_sph_3d.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
+Tahini phase shift is simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl/spoon). The tahini particles contain a property which corresponds to the amount of H2O arund that particle. In addition to classical fluid flow equations, as well as rigid body motion equation to move the spoon - a new equation was introduced to the system: **Guassian Lennard Jones Interaction**. Every two particles interact a [Lennard Jones potential](https://en.wikipedia.org/wiki/Lennard-Jones_potential) dependent on a Gaussian of the sum of H2O for both particles. Thus simulating H2O dependent crosslinking of Tahini. Kind of.
 
 <video width="640" height="360" controls autoplay loop>
   <source src="assets/tahini_sph_2d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
-Tahini phase shifts were simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl, spoon). The tahini particles contain a property which corresponds to the amount of H2O aorund that particle. In addition to to fluid flow equations (See Implementation) - a new equation was added to the system, each two particles interact by Van der Waalce force (Lennard Jones potential) dependent on a Gaussian of the sum of the H2O for both particles.
-
-## Implementation (the beginning)
+## The Basics
 
 The code is based on [hydrostatic_tank](https://github.com/pypr/pysph/blob/master/pysph/examples/hydrostatic_tank.py) example from PySPH, where fluid particles are floating in a tank. Each PySPH program basically contains three parts: particles, equations and a solver. First, I will describe the 2D version of fluid siumlation in a bowl mixed by a spoon (no phase shifts, yet)
 
@@ -456,3 +461,13 @@ python3 tahini_bowl_3d.py [--openmp] --tf 60 --bc-type 3
 ```
 
 Notice the `nx` parameter in the Python file. It determines the amount of particles the system will have.
+
+## How to visualize
+
+After generating a bunch of frames, we can visualize them using [ParaView](https://www.paraview.org/).
+
+First, we need to convert npz files to vtk. PySPH is awesome and allows us to easily do that using:
+
+`pysph dump_vtk -s rho,x,y,z -d output/ input/*.npz`
+
+Then we can open the simulation results in ParaView and mess around with it.
