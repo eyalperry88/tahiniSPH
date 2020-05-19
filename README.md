@@ -9,9 +9,9 @@ Tahini is best when purchased as 100% sesame paste.
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
 
-[Video demonstration (2X speed)](assets/real_tahini_2x.mp4)
+Video demonstration (2X speed):
 
-<video width="700" height="400" controls>
+<video width="640" height="360" controls>
   <source src="assets/real_tahini_2x.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
@@ -173,8 +173,7 @@ equations3 = [
 ]
  ```
 
-Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type. A few equations behind the scenes:
-
+Each of these equations define a set of confitions that will be integrated over the 'dest' particles. In case of particle-particles interactions, the sources parameter defines each particle type. A few well studied ([Monaghan 2005](https://iopscience.iop.org/article/10.1088/0034-4885/68/8/R01/pdf)) SPH equations behind the scenes:
 
 - ContinuityEquation - conservation of mass
 
@@ -254,7 +253,7 @@ The colors represents the velocity magnitude. Using 1500~ tahini particles, appr
 Now it's time to make things more interesting, I decided to create the following model - each tahini particle hold a property which symbolizes the amount of H2O in its vicinity. Now we are going to make every two tahini particles interact using Van der Waals force, which we define by the Lennard Jones potential:
 
 $$
-U_{ij} = 4 \epsilon \Big((\frac{sigma}{r_{ij}})^12 - (\frac{sigma}{r_{ij}})^6)
+U_{ij} = 4 \epsilon \Big((\frac{\sigma}{r_{ij}})^{12} - (\frac{\sigma}{r_{ij}})^6)
 $$
 
 ![Lennard Jones potential](https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/12-6-Lennard-Jones-Potential.svg/1280px-12-6-Lennard-Jones-Potential.svg.png)
@@ -264,7 +263,7 @@ Where $\espilon$ is a magic number that we have to choose for our settings. $\si
 The force acting on two particles would be
 
 $$
-F_{ij} = \frac{dU}{dr}\frac{r_i - r_j}{|r_i - r_j|} = 24 \epsilon \Big(2 * (\frac{sigma^12}{r_{ij}^13}) - (\frac{sigma^6}{r_{ij}^7}))\frac{r_i - r_j}{|r_i - r_j|}
+F_{ij} = \frac{dU}{dr}\frac{r_i - r_j}{|r_i - r_j|} = 24 \epsilon \Big(2 * (\frac{\sigma^{12}}{r_{ij}^{13}}) - (\frac{\sigma^6}{r_{ij}^7}))\frac{r_i - r_j}{|r_i - r_j|}
 $$
 
 And now comes the trick. We apply this force with a certain *probability*, a Gaussian which depends on the amount of H2O both particles have. So, if there is no water OR too much water, the particles will not be exhibit Van der Waals forces. If there is just the right amount (and ths we introduce another magic number, which can be experimentally found...)
@@ -333,3 +332,9 @@ Using the exact same setup as before, but now we set every particle water conten
 Pretty solid!
 
 ### But wait, couldn't you just increase the viscosity?
+
+If we look at the artificial viscosity equation ([Monaghan 2005](https://iopscience.iop.org/article/10.1088/0034-4885/68/8/R01/pdf)), we notice they are quite similar to our LJ potential... but what the LJ equation has is that two particles repel each other if they are too close. Thus, setting high numbers to the viscosity parameter, alpha, causes the simulation to crash. Alpha is set by default to 0.24 (water). I set it to 1 for tahini at a liquid state, and below is a simulation of the highest alpha I manually found that didn't crash (5):
+
+![Very viscous tahini](assets/not_solid.gif)
+
+Not so solid...
