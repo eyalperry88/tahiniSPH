@@ -29,11 +29,11 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 ## Simulation
 
 <video width="640" height="360" autoplay loop>
-  <source src="assets/tahini_sph_2d_2.mp4" type="video/mp4">
+  <source src="assets/tahini_sph_2d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
-Tahini phase shifts was simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl, spoon). The tahini particles contain a property which corresponds to the amount of H2O aorund that particle. In addition to to fluid flow equations (See Implementation) - a new equation was added to the system, each two particles interact by Van der Waalce force (Lennard Jones potential) dependent on a Gaussian of the sum of the H2O for both particles.
+Tahini phase shifts were simulated using [PySPH](https://pysph.readthedocs.io/en/latest/), a powerful framework for fluid simulation. The system contains two types of particles: tahini and solid (bowl, spoon). The tahini particles contain a property which corresponds to the amount of H2O aorund that particle. In addition to to fluid flow equations (See Implementation) - a new equation was added to the system, each two particles interact by Van der Waalce force (Lennard Jones potential) dependent on a Gaussian of the sum of the H2O for both particles.
 
 ## Implementation (the beginning)
 
