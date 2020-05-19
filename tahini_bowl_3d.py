@@ -96,7 +96,7 @@ Re = 100
 nu = Vmax * Ly / Re
 
 # Numerical setup
-nx = 50
+nx = 64
 dx = Lx / nx
 ghost_extent = 5.5 * dx
 hdx = 1.2
