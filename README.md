@@ -493,3 +493,12 @@ Many many thanks to:
 - Manu for AWS compute to generate the 3D animations.
 - Tahini filming crew: Tomás, Jan and Björn.
 - Wholefoods for the Tahini (although there used to be a better brand at H-Mart and it mysteriously disappeared off the shelves...)
+
+## Post-credits scene 
+
+<video width="640" height="360" controls>
+  <source src="assets/bonus.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video><br />
+
+Dedicated to all Tahini lovers (NSFW)
