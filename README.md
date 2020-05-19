@@ -10,7 +10,7 @@ Tahini is best when purchased as 100% sesame paste.
 
 <figure class="image">
   <img src="assets/tahini_products.jpg">
-  <figcaption style="text-align:right; font-style: italic; font-size:12px; margin-bottom:10px;">No Tahini has been wasted in the making of this experiment.</figcaption>
+  <figcaption style="text-align:right; font-style: italic; font-size:12px; margin-bottom:14px;">No Tahini has been wasted in the making of this experiment.</figcaption>
 </figure>
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
@@ -29,7 +29,7 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 ## Simulation
 
 <video width="640" height="360" autoplay loop>
-  <source src="assetstahini_sph_2d_2.mp4" type="video/mp4">
+  <source src="assets/tahini_sph_2d_2.mp4" type="video/mp4">
 Your browser does not support the video tag.
 </video>
 
@@ -248,7 +248,6 @@ solver = Solver(kernel=kernel, dim=2, integrator=integrator,
                 tf=tf, dt=dt,
                 adaptive_timestep=False
                 )
-return solver
 ```
 
 ### And the results
@@ -433,3 +432,26 @@ class CircularMotion(Equation):
         d_w[d_idx] = self.A * self.omega * sin(self.omega * 2 * M_PI * t)
         d_aw[d_idx] = (self.A * self.omega) ** 2 * sin(self.omega * 2 * M_PI * t) * (sin(self.omega * 2 * M_PI * t) - 2 * cos(self.omega * 2 * M_PI * t))
 ```
+
+
+
+
+## How to run
+
+First, install [PySPH](https://pysph.readthedocs.io/en/latest/installation.html) and all of it's dependencies (running without multicore/GPU support will be too slow)
+
+Now to run the 2D version:
+
+```
+python3 tahini_bowl.py [--openmp] --tf 32 --bc-type 3
+```
+
+- tf - end time. it takes around 32 "seconds" to reach saturation in the current settings
+- bc-type - SPH equations - REF1 or REF3  
+
+For the 3D version:
+```
+python3 tahini_bowl_3d.py [--openmp] --tf 60 --bc-type 3
+```
+
+Notice the `nx` parameter in the Python file. It determines the amount of particles the system will have.
