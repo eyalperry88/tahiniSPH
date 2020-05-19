@@ -287,7 +287,13 @@ $$
 p_{ij} = exp\bigg(\frac{-({H2O}_i + {H2O}_j - \mu)^2}{\sigma}\bigg)
 $$
 
-We set $\mu = 1$ and $\sigma=1/12$, so low amount of water will exhibit nearly zero interaction force
+We set $\mu = 1$ and $\sigma=1/12$, so low amount of water will exhibit nearly zero interaction force.
+
+This, we get a new *governing equation* - **Weighted Lennard Jones**:
+
+$$
+{F'}_{ij} = p_{ij} F_{ij}
+$$
 
 The code for the equation looks like:
 
@@ -456,7 +462,13 @@ Water is flowing a bit too quickly to notice... so here is a slower *fill_rate*:
 Your browser does not support the video tag.
 </video><br />
 
-## How to run
+## Conclusions and future work
+
+This project was both fun and allowed me to apply recently acquired skills from NoMM class at MIT, where we learn how to describe, model and simulate natural processes using simple mathematical formulas and *governing equations*.
+
+I have to admit that the 3D simulation is not as realistic as I hoped for.My aim was that one equation, would cause the tahini to clump and break (see first video, or better, go make some tahini). However, the rotational constant speed just made the whole tahini clump to a single solid and rotate in the bowl. Thus, I suspect that a more stochastic mixing force would produce more visually pleasing result. The water diffuse model is also very simplistic, and it would be cool to model water as another particle in the system (that was my original intention... but decided to start with a more simple one particle type model). Last, another interesting thing to do is to explore those "magic numbers" using real-world experiments and find the right ones, and do they differ as how the sesame was grinded, roasted etc...
+
+# How to run
 
 First, install [PySPH](https://pysph.readthedocs.io/en/latest/installation.html) and all of it's dependencies (running without multicore/GPU support will be too slow)
 
@@ -486,7 +498,7 @@ First, we need to convert npz files to vtk. PySPH is awesome and allows us to ea
 
 Then we can open the simulation results in ParaView and mess around with it.
 
-## Acknowledgements
+# Acknowledgements
 
 Many many thanks to:
 - Filippos for helpful tips on visualization of SPH.
@@ -494,7 +506,7 @@ Many many thanks to:
 - Tahini filming crew: Tomás, Jan and Björn.
 - Wholefoods for the Tahini (although there used to be a better brand at H-Mart and it mysteriously disappeared off the shelves...)
 
-## Post-credits scene 
+## Post-credits scene
 
 <video width="640" height="360" controls>
   <source src="assets/bonus.mp4" type="video/mp4">
