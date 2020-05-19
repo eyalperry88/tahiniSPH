@@ -11,6 +11,11 @@ To prepare it, water, lemon and favorite spices are slowly added and stirred. In
 
 [Video demonstration (2X speed)](assets/real_tahini_2x.mp4)
 
+<video width="700" height="400" controls>
+  <source src="assets/real_tahini_2x.mp4" type="video/mp4">
+Your browser does not support the video tag.
+</video>
+
 Notice that while sharing certain similarities, Tahini is *not* a "classical" non-Newtonian fluid, which exhibits phase shifts as response to stress. Tahini's phase is defined the amount of water in the system, and the solid phase is dependent on "just the right amount" - too little or too much water, and tahini is still liquid (viscous, but liquid). Not exhibited in the video, having the right amount for a long time creates such a solid piece of Tahini that it might break a blender. Be careful.
 
 This process is sometimes described as "seizing" and is not unique to Tahini. Peanut butter, as well as non edible materials such as plaster, are known to seize up water and solidify before going to liquid state. This happens as small amounts water act as a cross-linker between molecules. We assume a similar process happens for tahini, while the liquid starting point is due to the high oil concentration.
@@ -316,8 +321,15 @@ And we add it to our equation list:
 equations=[ ... TahiniEquation(dest='tahini', sources=['tahini'], sigma=dx / 1.122), ... ]
 ```
 
-If we now set every particle water content to 0.5 (the ideal), we now get:
+And we also need to set the new property to our tahini particles:
+```python
+tahini.add_property('h2o_amount')
+```
+
+Using the exact same setup as before, but now we set every particle water content to 0.5 (the ideal), we now get:
 
 ![Solid tahini in a bowl](assets/solid.gif)
 
 Pretty solid!
+
+### But wait, couldn't you just increase the viscosity?
