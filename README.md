@@ -28,6 +28,9 @@ This process is sometimes described as "seizing" and is not unique to Tahini. Pe
 
 ## Simulation
 
+![Fluid in a bowl](assets/tahini_sph_2d_2.gif)
+
+
 <video width="640" height="360" autoplay loop>
   <source src="assets/tahini_sph_2d_2.mp4" type="video/mp4">
 Your browser does not support the video tag.
