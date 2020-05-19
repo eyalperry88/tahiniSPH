@@ -38,7 +38,7 @@ Tahini phase shift is simulated using [PySPH](https://pysph.readthedocs.io/en/la
 <video width="640" height="360" controls autoplay loop>
   <source src="assets/tahini_sph_2d_v3.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video>
+</video><br /><br /><br />
 
 ## The Basics
 
@@ -409,7 +409,7 @@ And here is the results:
 <video width="640" height="360" controls>
   <source src="assets/tahini_sph_2d.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video>
+</video><br /><br /><br />
 
 Each particle is colored with the H2O amount it sees. As you can see, the system starts as a fluid. After a short while, "water drops" starts to trickle. The system become somewhat solid/granular... but then as water saturates the system, it goes back to liquid.
 
@@ -444,15 +444,15 @@ And the results:
 <video width="640" height="360" controls>
   <source src="assets/tahini_sph_3d.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video>
+</video><br /><br />
 
 Water is flowing a bit too quickly to notice... so here is a slower *fill_rate*:
 
 
-<video width="640" height="360" controls autoplay loop>
+<video width="640" height="360" controls>
   <source src="assets/tahini_sph_3d_v2.mp4" type="video/mp4">
 Your browser does not support the video tag.
-</video>
+</video><br /><br /><br />
 
 ## How to run
 
