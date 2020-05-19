@@ -466,9 +466,15 @@ Your browser does not support the video tag.
 
 This project was both fun and allowed me to apply recently acquired skills from NoMM class at MIT, where we learn how to describe, model and simulate natural processes using simple mathematical formulas and *governing equations*.
 
-I have to admit that the 3D simulation is not as realistic as I hoped for.My aim was that one equation, would cause the tahini to clump and break (see first video, or better, go make some tahini). However, the rotational constant speed just made the whole tahini clump to a single solid and rotate in the bowl. Thus, I suspect that a more stochastic mixing force would produce more visually pleasing result. The water diffuse model is also very simplistic, and it would be cool to model water as another particle in the system (that was my original intention... but decided to start with a more simple one particle type model). Last, another interesting thing to do is to explore those "magic numbers" using real-world experiments and find the right ones, and do they differ as how the sesame was grinded, roasted etc...
+I have to admit that the 3D simulation is not as realistic as had originally I hoped for. My aim was that one equation, would cause the tahini to clump and break (see first video, or better, go make some tahini). However, the rotational constant speed just made the whole tahini clump to a single solid and rotate in the bowl. Thus, I suspect that a more stochastic mixing force would produce more visually pleasing result. The water diffuse model is also very simplistic, and it would be cool to model water as another particle in the system (that was my original intention... but decided to start with a more simple one particle type model). Last, another interesting thing to do is to explore those "magic numbers" using real-world experiments and find the right ones, and do they differ as how the sesame was grinded, roasted etc...
 
-# How to run
+Fluid flow simulation is very hard, and I have yet to scratch the surface in this week-long project. It is humbling to consider the amount of CPUs, lines of code, gigabytes of data and human perseverance required to accurately simulate a single spoon of tahini. While the same compute is performed miraculously by Mother Nature within minimal space and energy, to produce super accurate, reproducible and delicious results.
+
+<br /><br />
+
+# Appendix
+
+## How to run
 
 First, install [PySPH](https://pysph.readthedocs.io/en/latest/installation.html) and all of it's dependencies (running without multicore/GPU support will be too slow)
 
