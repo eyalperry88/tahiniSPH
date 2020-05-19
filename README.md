@@ -5,7 +5,11 @@
 Tahini is amazing. A condiment made from toasted ground hulled sesame, tahini can be added to a variety of dishes and drinks to improve taste, texture and [nutritional value](https://fdc.nal.usda.gov/fdc-app.html#/food-details/168604/nutrients).
 
 Tahini is best when purchased as 100% sesame paste.
-![100% Tahini Products](assets/tahini_products.jpg)
+
+<figure class="image">
+  <img src="assets/tahini_products.jpg">
+  <figcaption>No Tahini has been wasted in the making of this experiment.</figcaption>
+</figure>
 
 To prepare it, water, lemon and favorite spices are slowly added and stirred. In this process, something very odd happens. The tahini at room temperature starts as a viscous fluid. As water is added to the mixture, the tahini goes through a *phase shift* and becomes granular solid. As more water is added, the tahini returns to a fluid and delicious state.
 
@@ -248,7 +252,7 @@ return solver
 
 The colors represents the velocity magnitude. Using 1500~ tahini particles, approximately 3 minutes to run on my laptop using multicore (OpenMPI)
 
-## From fluid to tahini and back again
+## It's time to solidify our particle system
 
 Now it's time to make things more interesting, I decided to create the following model - each tahini particle hold a property which symbolizes the amount of H2O in its vicinity. Now we are going to make every two tahini particles interact using Van der Waals force, which we define by the Lennard Jones potential:
 
@@ -331,10 +335,62 @@ Using the exact same setup as before, but now we set every particle water conten
 
 Pretty solid!
 
-### But wait, couldn't you just increase the viscosity?
+### Hold on a minute, couldn't you just increase the viscosity?
 
 If we look at the artificial viscosity equation ([Monaghan 2005](https://iopscience.iop.org/article/10.1088/0034-4885/68/8/R01/pdf)), we notice they are quite similar to our LJ potential... but what the LJ equation has is that two particles repel each other if they are too close. Thus, setting high numbers to the viscosity parameter, alpha, causes the simulation to crash. Alpha is set by default to 0.24 (water). I set it to 1 for tahini at a liquid state, and below is a simulation of the highest alpha I manually found that didn't crash (5):
 
 ![Very viscous tahini](assets/not_solid.gif)
 
 Not so solid...
+
+## There and back again: liquid-solid-liquid
+
+Now it's time for the final experiment. I add water to the system and watch as the tahini goes from liquid, to solid and back again. Instead of adding water to the whole system at once, we are going to trickle it. I create a *faucet*, and area/volume in the particle system where H2O is refilled harmonically:
+
+```python
+class H2OFaucet(Equation):
+    """Applies a "faucet" - constant refill of H2O for a specific subset of particles"""
+    def __init__(self, dest, sources, x, y, r, fill_rate, lag=4):
+        self.faucet_x = x
+        self.faucet_y = y
+        self.faucet_r2 = r  ** 2
+        self.faucet_fill_rate = fill_rate
+        self.omega = 0.5
+        self.lag = lag
+        super(H2OFaucet, self).__init__(dest, sources)
+
+    def initialize(self, d_idx, d_h2o_amount, d_x, d_y, t, dt):
+        if t > self.lag and (d_x[d_idx] - self.faucet_x) ** 2 + (d_y[d_idx] - self.faucet_y) ** 2 < self.faucet_r2:
+            d_h2o_amount[d_idx] += self.faucet_fill_rate * dt * (sin(self.omega * 2 * M_PI * t) ** 2)
+```
+
+And we add another equation that will diffuse the water through the system. This PySPH equation was taken from [Alexander Puckhaber's thesis project](https://github.com/AlexanderPuckhaber/FluidSimulationThesis):
+
+```python
+class DiffuseH2O(Equation):
+    """Diffusion of H2O between particles  """
+    def __init__(self, dest, sources, diffusion_speed):
+        self.diffusion_speed = diffusion_speed
+        super(DiffuseH2O, self).__init__(dest, sources)
+
+    def initialize(self, d_idx, d_h2o_velocity):
+        d_h2o_velocity[d_idx] = 0.0
+
+    def loop(self, d_idx, s_idx, d_h2o_velocity, s_h2o_velocity, d_h2o_amount, s_h2o_amount, WIJ):
+        h2o_gradient = (s_h2o_amount[s_idx] - d_h2o_amount[d_idx])
+        d_h2o_velocity[d_idx] += ( h2o_gradient * self.diffusion_speed ) * WIJ
+        s_h2o_velocity[s_idx] -= ( h2o_gradient * self.diffusion_speed ) * WIJ
+
+    def post_loop(self, d_idx, d_h2o_amount, d_h2o_velocity, dt, t):
+        d_h2o_amount[d_idx] += d_h2o_velocity[d_idx] * dt
+```
+
+We add those equations to the list:
+```python
+Group(equations=[
+    H2OFaucet(dest='tahini', sources=None, x=Cx, y=tahiniH, r=0.15, fill_rate=5),
+    DiffuseH2O(dest='tahini', sources=['tahini'], diffusion_speed=0.1),
+]),
+```
+
+Now for the animation, we will paint each
